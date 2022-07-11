@@ -1,30 +1,18 @@
 package setup
 
 import (
-	"fmt"
-	"log"
-	"os"
-
+	"github.com/dasha-kinsely/ostruct/setup/config"
+	"github.com/dasha-kinsely/ostruct/setup/routes"
 	"github.com/gin-gonic/gin"
-	"github.com/joho/godotenv"
-	"gorm.io/gorm"
 )
 
-type Server struct {
-	DB *gorm.DB
-	Router *gin.Engine
-}
-
-func LoadEnv() {
-	var err error
-	if err = godotenv.Load(); err != nil {
-		log.Fatalf("failed to find .env files !!!, %v", err)
-	} else {
-		fmt.Println("env variables loaded successfully...")
-	}
-}
-
 func Run() {
-	LoadEnv()
-	fmt.Fprintln(os.Getenv("DB"))
+	// set up of databases & port
+	config.LoadEnv()
+	config.SetupSqlDBConnection()
+	defer config.CloseSqlDBConnection(config.DB)
+	// get the server ready
+	server := gin.Default()
+	routes.InitRoutes(server)
+	server.Run()
 }
