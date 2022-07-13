@@ -8,7 +8,7 @@ import (
 	"gorm.io/gorm"
 )
 
-var DB *gorm.DB
+var SqlDB *gorm.DB
 
 func SetupSqlDBConnection() {
 	// get from .env files, assuming dotenv has been found and loaded from initialize.go
@@ -33,11 +33,11 @@ func SetupSqlDBConnection() {
 		panic("Error initializing MYSQL_DB...")
 	}
 	// point the initialized sql db to DB variable
-	DB = db
+	SqlDB = db
 }
 
 func GetSqlDB() *gorm.DB {
-	return DB
+	return SqlDB
 }
 
 func CloseSqlDBConnection(db *gorm.DB) {
