@@ -3,6 +3,7 @@ package setup
 import (
 	"github.com/dasha-kinsely/ostruct/middlewares"
 	"github.com/dasha-kinsely/ostruct/setup/config"
+	"github.com/dasha-kinsely/ostruct/setup/migration"
 	"github.com/dasha-kinsely/ostruct/setup/routes"
 	"github.com/gin-gonic/gin"
 )
@@ -10,6 +11,8 @@ import (
 func OnStartup() {
 	config.LoadEnv()
 	config.SetupSqlDBConnection()
+	config.SetupMongoDBConnection()
+	config.SetupRedisConnection()
 }
 
 func Run() {
@@ -21,4 +24,5 @@ func Run() {
 	server.Use(middlewares.CorsMiddleware())
 	routes.InitRoutes(server)
 	server.Run()
+	migration.MigrateMongoDB()
 }

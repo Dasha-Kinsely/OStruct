@@ -13,6 +13,7 @@ func InitRoutes(r *gin.Engine) {
 				"message": "all good Saul",
 			})
 		})
+		//base.GET("/")
 	}
 	// routes that require middlewares
 	

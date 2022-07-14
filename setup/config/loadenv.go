@@ -3,9 +3,9 @@ package config
 import (
 	"fmt"
 	"log"
+
 	"github.com/joho/godotenv"
 )
-
 
 func LoadEnv() {
 	var err error
