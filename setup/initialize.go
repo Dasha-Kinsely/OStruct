@@ -1,6 +1,8 @@
 package setup
 
 import (
+	"os"
+
 	"github.com/dasha-kinsely/ostruct/middlewares"
 	"github.com/dasha-kinsely/ostruct/setup/config"
 	"github.com/dasha-kinsely/ostruct/setup/migration"
@@ -13,6 +15,10 @@ func OnStartup() {
 	config.SetupSqlDBConnection()
 	config.SetupMongoDBConnection()
 	config.SetupRedisConnection()
+	// does this run require setting up database schemas
+	if os.Getenv("REQUIRES_MIGRATION") == "yes" {
+		BulkMigrate()
+	}
 }
 
 func Run() {
@@ -24,5 +30,9 @@ func Run() {
 	server.Use(middlewares.CorsMiddleware())
 	routes.InitRoutes(server)
 	server.Run()
+}
+
+func BulkMigrate() {
 	migration.MigrateMongoDB()
+	migration.MigrateSqlDB()
 }

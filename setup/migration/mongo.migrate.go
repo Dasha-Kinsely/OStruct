@@ -9,8 +9,8 @@ import (
 )
 
 func MigrateMongoDB() {
-	userCollection := config.GetMongoClient().Database("local").Collection("users")
-	user := bson.D{{"name", "u1"}, {"age", 40}}
+	userCollection := config.GetMongoDB().Collection("users")
+	user := bson.D{{"name", "u3"}, {"age", 62}}
 	result, err := userCollection.InsertOne(context.TODO(), user)
 	if err != nil {
 		panic(err)
