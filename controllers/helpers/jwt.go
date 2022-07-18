@@ -51,7 +51,9 @@ func (j *jWTService) ValidateToken(token string, c *gin.Context) *jwt.Token {
 		return []byte(j.secretKey), nil
 	})
 	if err != nil {
+		//fmt.Println(t)
 		return nil
 	}
+	//fmt.Println(t)
 	return t
 }
