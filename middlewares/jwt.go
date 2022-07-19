@@ -3,13 +3,13 @@ package middlewares
 import (
 	"net/http"
 
-	"github.com/dasha-kinsely/ostruct/controllers/helpers"
 	"github.com/dasha-kinsely/ostruct/controllers/responses"
+	"github.com/dasha-kinsely/ostruct/controllers/services"
 	"github.com/gin-gonic/gin"
 )
 
 // The argument must first be initialized at "setup/routes/routes.go" to initialize its struct values
-func AuthorizeJWT(j helpers.JWTService) gin.HandlerFunc {
+func AuthorizeJWT(j services.JWTService) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		// fetch the auth header received from frontend requests
 		authHeader := c.GetHeader("Authorization")

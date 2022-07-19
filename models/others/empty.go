@@ -1,4 +1,4 @@
-package obj
+package others
 
 type Empty struct {
 

@@ -1,0 +1,1 @@
+all files in repos, other than common.go have their corrsponding databases as their default structs

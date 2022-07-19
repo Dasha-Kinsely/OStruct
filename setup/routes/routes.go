@@ -5,14 +5,14 @@ import (
 	//"go.mongodb.org/mongo-driver/bson"
 	//"github.com/dasha-kinsely/ostruct/setup/config"
 
-	"github.com/dasha-kinsely/ostruct/controllers/helpers"
+	"github.com/dasha-kinsely/ostruct/controllers/services"
 	"github.com/dasha-kinsely/ostruct/middlewares"
 	"github.com/gin-gonic/gin"
 )
 
 // The following var are global and should be useful throughout the current user session
 var (
-	jwtService helpers.JWTService = helpers.NewJWTService()
+	jwtService services.JWTService = services.NewJWTService()
 )
 
 func InitRoutes(r *gin.Engine) {
