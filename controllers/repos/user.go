@@ -7,7 +7,7 @@ import (
 )
 
 type UserRepo interface {
-	InsertUser(user entities.User) (error)
+	InsertUser(user entities.User) (entities.User, error)
 	//UpdateUser(user entities.User) (entities.User, error): this should only be accessed by someone with admin privillege.
 	FindByEmail(email string) (entities.User, error)
 	FindByID(uid string) (entities.User, error)
@@ -20,16 +20,16 @@ func NewUserRepo(db *gorm.DB) UserRepo {
 	}
 }
 
-func (repo *MySQLClient) InsertUser(user entities.User) error {
+func (repo *MySQLClient) InsertUser(user entities.User) (entities.User, error) {
 	user.PasswordHash = utils.EncryptPassword(user.PasswordHash)
 	if err := repo.database.Save(&user).Error; err != nil {
-		return err
+		return user, err
 	}
 	linkedProfile := entities.UserExtras{User: user}
 	if err := repo.database.Table("userextras").Create(&linkedProfile).Error; err != nil {
-		return err
+		return user, err
 	}
-	return nil
+	return user, nil
 }
 
 func (repo *MySQLClient) FindByEmail(email string) (entities.User, error) {

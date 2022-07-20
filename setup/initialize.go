@@ -33,6 +33,6 @@ func Run() {
 }
 
 func BulkMigrate() {
-	migration.MigrateMongoDB()
+	//migration.MigrateMongoDB()
 	migration.MigrateSqlDB()
 }

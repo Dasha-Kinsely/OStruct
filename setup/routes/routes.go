@@ -5,24 +5,35 @@ import (
 	//"go.mongodb.org/mongo-driver/bson"
 	//"github.com/dasha-kinsely/ostruct/setup/config"
 
+	"github.com/dasha-kinsely/ostruct/controllers/handlers"
+	"github.com/dasha-kinsely/ostruct/controllers/repos"
 	"github.com/dasha-kinsely/ostruct/controllers/services"
 	"github.com/dasha-kinsely/ostruct/middlewares"
+	"github.com/dasha-kinsely/ostruct/setup/config"
 	"github.com/gin-gonic/gin"
 )
 
 // The following var are global and should be useful throughout the current user session
 var (
+	db = config.GetSqlDB()
+	userRepo repos.UserRepo = repos.NewUserRepo(db)
 	jwtService services.JWTService = services.NewJWTService()
+	authService services.AuthService = services.NewAuthService(userRepo)
+	userService services.UserService = services.NewUserService(userRepo)
+	authHandler handlers.AuthHandler = handlers.NewAuthHandler(authService, jwtService, userService)
 )
 
 func InitRoutes(r *gin.Engine) {
 	// routes that do not require middlewares
 	base := r.Group("/api")
 	{
+		base.GET("/signup", authHandler.Signup)
 		base.GET("/signin", func(c *gin.Context){
 			return
 		})
-		base.GET("/signup")
+		base.GET("/signout", func(c *gin.Context){
+			return
+		})
 	}
 	// routes that require middlewares
 	safe := r.Group("/authorized", middlewares.AuthorizeJWT(jwtService))
@@ -34,17 +45,3 @@ func InitRoutes(r *gin.Engine) {
 		})
 	}
 }
-/*
-base.GET("/test", func(c *gin.Context){
-			clientR := config.GetRedis()
-			pong, err := clientR.Ping(c).Result()
-			fmt.Println(pong, err)
-			clientM, _ := config.GetMongoClient().ListDatabaseNames(c, bson.D{{}})
-			fmt.Printf("mongo db names are %s\n", clientM)
-			clientS, _ := config.GetSqlDB().DB()
-			fmt.Printf("mysql db names are %s\n", clientS)
-			c.JSON(200, gin.H{
-				"message": "all good Saul",
-			})
-		})
-*/
