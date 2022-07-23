@@ -1,12 +1,12 @@
 package handlers
 
 import (
-	"net/http"
+	"log"
+	"strconv"
 
 	"github.com/dasha-kinsely/ostruct/controllers/responses"
 	"github.com/dasha-kinsely/ostruct/controllers/services"
 	"github.com/dasha-kinsely/ostruct/models/dto"
-	"github.com/dasha-kinsely/ostruct/models/others"
 	"github.com/gin-gonic/gin"
 )
 
@@ -20,40 +20,50 @@ type authHandler struct {
 	authService services.AuthService
 	jwtService services.JWTService
 	userService services.UserService
+	validatorService services.ValidatorService
 }
 
 func NewAuthHandler(
 	authService services.AuthService,
 	jwtService services.JWTService,
 	userService services.UserService,
+	validatorService services.ValidatorService,
 	) AuthHandler {
 		return &authHandler{
 			authService: authService,
 			jwtService: jwtService,
 			userService: userService,
+			validatorService: validatorService,
 		}
 }
 
 func (handler *authHandler) Signup(c *gin.Context) {
 	// check if the incoming form request is in valid format
 	var signupRequest dto.SignupRequest
-	if err := c.ShouldBind(&signupRequest); err != nil {
-		res := responses.ErrorResponse("sign up form is in an invalid format", err.Error(), others.Empty{})
-		c.AbortWithStatusJSON(http.StatusBadRequest, res)
-		return 
+	err := c.ShouldBind(&signupRequest)
+	if handler.validatorService.Validate(c, err, "signupForm") {
+		// create the user by accessing userService interface
+		user, err := handler.userService.CreateUser(signupRequest)
+		if handler.validatorService.Validate(c, err, "createUser") {
+			responses.NewSignupSerializer(c, user)
+		}
 	}
-	// create the user by accessing userService interface
-	user, err := handler.userService.CreateUser(signupRequest)
-	if err != nil {
-		res := responses.ErrorResponse("problem occurred while signing up user", err.Error(), others.Empty{})
-		c.AbortWithStatusJSON(http.StatusInternalServerError, res)
-		return
-	}
-	responses.NewSignupSerializer(c, user)
+	return
 }
 
 func (handler *authHandler) Signin(c *gin.Context) {
-	// var signinRequest dto.SigninRequest
+	// check if the incoming form request is in valid format
+	var signinRequest dto.SigninRequest
+	err := c.ShouldBind(&signinRequest)
+	if handler.validatorService.Validate(c, err, "signinForm") {
+		// verify user credentials
+		userID, err := handler.authService.VerifyCredentials(signinRequest.Email, signinRequest.Password) 
+		if handler.validatorService.Validate(c, err, "signinCred") {
+			token := handler.jwtService.GenerateToken(strconv.FormatUint(uint64(userID), 10))
+			log.Println(token)
+			responses.NewSigninSerializer(c, signinRequest.Email)
+		}
+	}
 	return
 }
 

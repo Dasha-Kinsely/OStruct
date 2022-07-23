@@ -1,4 +1,4 @@
-package others
+package commonstructs
 
 type Empty struct {
 

@@ -10,7 +10,7 @@ require (
 	github.com/jinzhu/copier v0.3.5 // indirect
 	github.com/joho/godotenv v1.4.0
 	go.mongodb.org/mongo-driver v1.9.1
-	golang.org/x/crypto v0.0.0-20210711020723-a769d52b0f97
+	golang.org/x/crypto v0.0.0-20220722155217-630584e8d5aa
 	gorm.io/driver/mysql v1.3.5
 	gorm.io/gorm v1.23.8
 )

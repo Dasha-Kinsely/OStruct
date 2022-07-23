@@ -1,0 +1,1 @@
+Grant all privileges on ostruct.* to 'yuntai'@'localhost' identified by 'dkemplyeeaccess';

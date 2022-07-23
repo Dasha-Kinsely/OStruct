@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/dasha-kinsely/ostruct/models/entities"
+	"github.com/dasha-kinsely/ostruct/models/commonstructs"
 	"github.com/dasha-kinsely/ostruct/utils"
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt"
@@ -28,7 +28,7 @@ func NewJWTService() JWTService {
 }
 
 func (j *jWTService) GenerateToken(uid string) string {
-	claims := &entities.JWTCustomClaim{
+	claims := &commonstructs.JWTCustomClaim{
 		Uid: uid,
 		StandardClaims: jwt.StandardClaims{
 			ExpiresAt: time.Now().AddDate(1, 0, 0).Unix(),

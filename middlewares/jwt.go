@@ -18,13 +18,12 @@ func AuthorizeJWT(j services.JWTService) gin.HandlerFunc {
 			c.AbortWithStatusJSON(http.StatusBadRequest, responseJSON)
 			return
 		}
-		// This is merely a function caller
 		// validate it to make sure that the user has signed-in before requesting the contents it is protecting
+		// This is merely a function caller: 1) nil means there is an error parsing jwt, 2) invalid token means wrong credential
 		token := j.ValidateToken(authHeader, c)
 		if !token.Valid || token == nil {
 			response := responses.ErrorResponse("JWT error", "Your token is not valid", nil)
 			c.AbortWithStatusJSON(http.StatusUnauthorized, response)
 		}
-
 	}
 }

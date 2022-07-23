@@ -1,4 +1,4 @@
-package entities
+package commonstructs
 
 import "github.com/golang-jwt/jwt"
 

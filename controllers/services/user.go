@@ -1,11 +1,12 @@
 package services
 
 import (
-	"log"
+	"errors"
 
 	"github.com/dasha-kinsely/ostruct/controllers/repos"
 	"github.com/dasha-kinsely/ostruct/models/dto"
 	"github.com/dasha-kinsely/ostruct/models/entities"
+	"gorm.io/gorm"
 )
 
 type UserService interface {
@@ -23,19 +24,16 @@ func NewUserService(userRepo repos.UserRepo) UserService {
 }
 
 func (repo *userService) CreateUser(signupRequest dto.SignupRequest) (entities.User, error) {
-	user := entities.User{}
-	user.Email = signupRequest.Email
-	user.Username = signupRequest.Username
-	user.PasswordHash = signupRequest.Password
-	log.Println(user)
-	return user, nil
-	// This step should not return any users
-	/*_, err := repo.userRepo.FindByEmail(signupRequest.Email)
+	_, err := repo.userRepo.FindByEmail(signupRequest.Email)
 	// If gorm does not find any existing users with specified email address, proceed
-	if err == gorm.ErrRecordNotFound {
-		//user, err := repo.userRepo.InsertUser(user)
-		return user, err
-	} else {
-		return entities.User{}, errors.New("problem occurred at data accessing layer, failed to create user...")
-	}*/
+	if errors.Is(err, gorm.ErrRecordNotFound) {
+		newUser := entities.User{}
+		newUser.Username = signupRequest.Username
+		newUser.Email = signupRequest.Email
+		newUser.Password = signupRequest.Password
+		newUser, err := repo.userRepo.InsertUser(newUser)
+		return newUser, err
+	}
+	user := entities.User{}
+	return user, errors.New("Problem occurred at data accessing layer: (user already exists!!!) failed to create user...")
 }

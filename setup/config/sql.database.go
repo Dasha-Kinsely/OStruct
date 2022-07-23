@@ -10,7 +10,7 @@ import (
 
 var SqlDB *gorm.DB
 
-func SetupSqlDBConnection() {
+func SetupSqlDBConnection() *gorm.DB {
 	// get from .env files, assuming dotenv has been found and loaded from initialize.go
 	dsn := os.Getenv("MYSQL_DSN")
 	disableDatetimePrecision, parseErr := strconv.ParseBool(os.Getenv("MYSQL_DISABLE_DATETIME_PRECISION"))
@@ -34,16 +34,5 @@ func SetupSqlDBConnection() {
 	}
 	// point the initialized sql db to DB variable
 	SqlDB = db
-}
-
-func GetSqlDB() *gorm.DB {
 	return SqlDB
-}
-
-func CloseSqlDBConnection(db *gorm.DB) {
-	database, err := db.DB()
-	if err != nil {
-		panic("Failed to close database...")
-	}
-	database.Close()
 }
