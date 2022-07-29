@@ -14,3 +14,10 @@ A special type of helper that returns structs that implement gin.Context's own r
 # WARNING: services and responses are not complete handlers by themselves and each may be accessed by multiple handlers. Keep the variables within method's own scopes, do not initialize any global variables in those files !!!
 
 ## NOTE: anything that requires access to database->repo or other common resources is considered a service, anything that doesn't should be placed inside utils directory. 
+
+
+## Responsibilities:
+Handlers: checks request format -> cycles through: (calls validators -> calls services) -> generate responses
+Services: main controllers and sanitizers before accessing repository
+Validators: check whether the responses received from services can be used to proceed with further actions 
+Repos: data access layer, the only layer that has direct access to databases

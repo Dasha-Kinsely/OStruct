@@ -16,7 +16,7 @@ var (
 	MongoContext context.Context
 )
 
-func SetupMongoDBConnection() {
+func SetupMongoDBConnection() *mongo.Client {
 	// WARNING: before running the following commands, you must first activate a mongod in your local terminal <mongod --auth --port 27017 --dbpath /usr/local/var/mongodb>
 	// WARNING: you must first create a user who has access to the db specified by MONGO_DB_NAME via your local mongodb's superadmin
 	// establish connection
@@ -46,6 +46,7 @@ func SetupMongoDBConnection() {
 	MongoClient = client
 	MongoDB = client.Database(dbName)
 	MongoContext = ctx
+	return MongoClient
 }
 
 // this function should rarely be used. The only times when it should be used is to check client info

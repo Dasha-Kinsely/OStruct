@@ -2,19 +2,16 @@ package entities
 
 import "gorm.io/gorm"
 
-// Create custom enum object
-type GenderEnum int8 
-const (
-	Male GenderEnum=iota+1
-	Female
-	Other
-)
-func (gender GenderEnum) ToString() string {
-	return [...]string{"Male", "Female", "Other"}[gender-1]
-}
-
 type UserExtras struct{
 	gorm.Model
-	Gender GenderEnum `gorm:"column:gender"`
+	Gender string `gorm:"column:gender"`
+	Organization Organization `gorm:"foreignKey:Organization"`
 	User User `gorm:"foreignKey:Username;constraint:OnUpdate:CASCADE,OnDelete:SET NULL;"`
+}
+
+type Organization struct {
+	OrganizationGroup string `gorm:"column:organization_group"`
+	Organization string `gorm:"column:organization;primaryKey"`
+	Department string `gorm:"column:department"`
+	Role string `gorm:"column:role"`
 }

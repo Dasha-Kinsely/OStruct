@@ -33,7 +33,8 @@ func (repo *userService) CreateUser(signupRequest dto.SignupRequest) (entities.U
 		newUser.Password = signupRequest.Password
 		newUser, err := repo.userRepo.InsertUser(newUser)
 		return newUser, err
+	} else {
+		user := entities.User{}
+		return user, errors.New("Problem occurred at data accessing layer: (user already exists!!!) failed to create user...")
 	}
-	user := entities.User{}
-	return user, errors.New("Problem occurred at data accessing layer: (user already exists!!!) failed to create user...")
 }

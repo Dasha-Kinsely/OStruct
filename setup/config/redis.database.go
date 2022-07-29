@@ -1,7 +1,6 @@
 package config
 
 import (
-	"context"
 	"os"
 	"strconv"
 	"time"
@@ -9,17 +8,14 @@ import (
 	"github.com/go-redis/redis/v9"
 )
 
-var RedisClient *redis.Client
-var ctx *context.Context
-
-func SetupRedisConnection() {
+func SetupRedisConnection() *redis.Client {
 	// does the current version require caching features
 	useCache, parseErr := strconv.ParseBool(os.Getenv("USE_CACHE"))
 	if parseErr != nil {
 		panic("Error parsing boolean variables from .env files, please check your .env files...")
 	}
 	if !useCache {
-		return
+		return nil
 	}
 	// initialize redis for caching
 	addr := os.Getenv("REDIS_ADDR")
@@ -30,7 +26,7 @@ func SetupRedisConnection() {
 	if parseErr != nil {
 		panic("Error parsing boolean variables from .env files, please check your .env files...")
 	}
-	RedisClient = redis.NewClient(&redis.Options{
+	RedisClient := redis.NewClient(&redis.Options{
 		Addr: addr,
 		Password: password,
 		DB: rdb,
@@ -41,9 +37,5 @@ func SetupRedisConnection() {
 		WriteTimeout: 5*time.Second,
 		MinIdleConns: minIdleConns,
 	})
-}
-
-func GetRedis() *redis.Client{
-	//log.Println(RedisClient.ClientGetName())
 	return RedisClient
 }

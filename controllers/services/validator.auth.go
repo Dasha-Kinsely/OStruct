@@ -8,17 +8,17 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-type ValidatorService interface {
+type ValidatorAuthService interface {
 	Validate(c *gin.Context, err error, step string) bool
 } 
-type validatorService struct {
+type validatorAuthService struct {
 }
 
-func NewValidatorService() ValidatorService {
-	return &validatorService{}
+func NewAuthValidatorService() ValidatorAuthService {
+	return &validatorAuthService{}
 }
 
-func (v validatorService) Validate(c *gin.Context, err error, step string) bool {
+func (v validatorAuthService) Validate(c *gin.Context, err error, step string) bool {
 	empty := commonstructs.Empty{}
 	switch step {
 	case "signupForm":
